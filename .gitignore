@@ -1,0 +1,91 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+*.pid
+*.pid.lock
+
+# Dependency directories
+node_modules/
+vendor/
+
+# Python-related
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+ENV/
+env/
+venv/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+Pipfile
+Pipfile.lock
+
+# Django
+*.sqlite3
+media/
+staticfiles/
+
+# Environment variables
+.env
+
+# Editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Compiled code
+*.o
+*.so
+*.class
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.rej
+
+# Package files
+*.lock
+*.gz
+*.zip
+*.tar
+*.tgz
+*.rar
+
+# Testing
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+
+# Docker
+*.env
+docker-compose.override.yml

@@ -1,0 +1,22 @@
+# Predicitng the rolling 12 month rate of MRSA in NHS Regions by month
+### Group Members: 
+Stuart Bladon (solo)
+## Modelling Process
+For my final project, I chose to work with the fingertips database from Public Health England. They keep track of a large number of public health metrics in England. One metric that is of interest to me is the MRSA rate. MRSA is a strain of antibiotic-resistant bacteria that threatens to throw us back into a pre-antibiotic world, another thing for you to worry about once you finish worrying about climate change, rogue AI, and pandemics. I decided it would be really interesting to try and predict the rate of MRSA across different NHS regions. 
+
+To start, I consulted domain experts. They told me that pretty much all that matters is overprescribing of antibiotics. If you prescribe people antibiotics when they don’t need them, then you will breed MRSA. I probed a little further to see what might help with an extra few percentage points. Hospital cleanliness, the type of antibiotics prescribed, and seasonality were all mentioned. Based on what was available in the data, I chose to predict on a monthly basis, with the following predictors:
+
+Twelve-month rolling total number of prescribed antibiotic items per 1000 resident individuals per day (for the previous month)
+E. coli bacteraemia 12-month rolling case counts and rates, by reporting acute trust and month. (Rate was used, not count, and this was used as an indicator of hospital cleanliness, also for the previous month)
+Intravenous antibiotic prescribing; DDDs per 1000 admissions by month and NHS Acute Trust (DDD is Daily Defined Dose)
+Winter_dummy (This was simply 1 if the month was Nov-Feb, supposedly this could be more of an issue in winter)
+
+The error metric was actually more difficult than I thought. My first thought was MSE, but what on earth is the mean squared error of the rate of MRSA cases per 100,000 bed-days in hospitals? Perhaps MAPE would be more interpretable, but it’s already a rate, what is a percentage of a rate? It felt wrong. So I settled on Mean Absolute Error, it seemed the best balance of interpretable and representative of accuracy, furthermore since the errors were often below 0, use would exaggerate accuracies. 
+
+First I trained a simple linear regression model. I like to start with this because it’s highly interpretable, and simple. I confirmed each feature by dropping them and comparing with cross validation, all variables included led to the best results. This algorithm performed surprisingly well with a MAE of 0.34. Upon inspection I was less impressed. The model tended to predict in the middle of the distribution, which works great for minimizing MAE but not so great for actual predictions. Also looking at the actual coefficients suggested a negative relationship between antibiotics prescribed and MRSA rates. This is highly suspect. To me it seemed like this was a pretty bad model, perhaps the relationship was more complex than a simple linear model could capture. 
+
+Moving on to a deep neural network (DNN), I confirmed parameters such as learning rate and hidden layer size with cross validation. This model seemed to perform far better with a MAE. DNNs are inherently less interpretable than linear models, but a simple inspection of the predictions did seem to confirm the model was making actual predictions rather than optimising for the middle of the distribution. I would contest that this model is likely still overfitting to the current distribution, I’m not sure how it would handle a serious outbreak of MRSA, despite the promising performance in-silico, the real world is often less forgiving. 
+
+## How to use
+
+The script MRSA_predict.py should run without any need for adaptation by the user. This will train both the linear and deep learning model. The script cross validates on the training of multiple DNNs so it takes quite a bit of time to run, in my experience almost exactly the amount of time required to make a cup of tea. For inference I have included a function called 'predict', which will take a list of the parameters (antibiotic prescribing rate, Ecoli rate, Intravenous AB rate, winter dummy) and return a prediction for the MRSA rate for the following month. to find your own predictions simply create your own list and pass it to the function which will return a prediciton. 
